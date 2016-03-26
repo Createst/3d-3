@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="mytool.js"></script>
+	<link type="text/css" rel="stylesheet" href="popbox.css"/>
+  <style type="text/css">
+	*{margin:0px;padding:0px;}
+	section{width:700px;height:320px;margin:200px auto;perspective:800px;position:relative;}
+	section > ul > li{list-style:none;height:320px;float:left;position:relative;
+	transform-style:preserve-3d;transform: translateZ(-160px);}
+/*	section > ul > li:nth-child(1){transition:1s 0s;}*/
+/*	section > ul > li:nth-child(2){transition:1s .3s;}*/
+/*	section > ul > li:nth-child(3){transition:1s .5s;}*/
+/*	section > ul > li:nth-child(4){transition:1s .89s;}*/
+	section > ul > li div{width:175px;height:320px;position:absolute;}
+	
+	section > ul > li div:nth-child(1){transform:translateZ(160px);background:url("images/11.jpg") no-repeat;}
+	
+	section > ul > li div:nth-child(2){transform:rotate(180deg);transform: translateZ(-160px);background:url("images/33.jpg") no-repeat;}
+	
+	section > ul > li div:nth-child(3){left:0px;top:-320px;transform: translateZ(160px) rotateX(90deg);transform-origin:bottom;background:url("images/22.jpg") no-repeat;}
+	
+	section > ul > li div:last-child{left:0px;top:320px;transform: translateZ(160px) rotateX(-90deg);transform-origin:top;z-index:-1;background:url("images/44.jpg") no-repeat;}
+	
+	
+	
+/*	section > ul > li:nth-child(4){z-index:-1;}*/
+/*	section > ul > li:nth-child(2) div{background-position:-175px;}*/
+/*	section > ul > li:nth-child(3) div{background-position:-350px;}*/
+/*	section > ul > li:nth-child(4) div{background-position:-525px;}*/
+	nav{position:absolute;z-index:100;bottom:10px;right:50px;}
+	nav ul li{list-style:none;width:20px;height:20px;float:left;margin-left:10px;border-radius:10px;text-align:center;line-height:20px;cursor:pointer;background:#99ffff;}
+	.bg{background:#00ff33;color:white;}
+  </style>
+ </head>
+ <body>
+	
+	<section>
+		<ul>
+<!-- 			<li><div></div><div></div><div></div><div></div></li> -->
+<!-- 			<li><div></div><div></div><div></div><div></div></li> -->
+<!-- 			<li><div></div><div></div><div></div><div></div></li> -->
+<!-- 			<li><div></div><div></div><div></div><div></div></li> -->
+		</ul>
+		<nav>
+			<ul>
+				<li class="bg">1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+			</ul>
+		</nav>
+	</section>
+
+  <script>
+		var index=0;
+		//播放下一张
+		function next(){
+
+			var deg=(++index)*90;
+			$("nav ul li:eq("+index%4+")").addClass("bg").siblings().removeClass("bg");
+			$("section > ul > li").css("transform","translateZ(-160px)  rotateX(-"+deg+"deg)");
+				
+		}
+		//播放上一张
+		function prev(){
+
+			var deg=(--index)*90;
+			$("nav ul li:eq("+index%4+")").addClass("bg").siblings().removeClass("bg");
+			$("section > ul > li").css("transform","translateZ(-160px)  rotateX(-"+deg+"deg)");
+				
+		}
+
+	var interval=window.setInterval("next()",4000);
+
+
+	//鼠标停留在图片上停止旋转
+	$("section").hover(function(){
+			window.clearInterval(interval);
+	},
+	function(){
+	
+		interval=window.setInterval("next()",4000);
+	})
+
+	//鼠标点击索引选择图片
+	$("nav ul li").on("mousedown",function(e){
+	
+		if(e.which==1){
+			
+			var liIndex=$(this).index();
+			$(this).addClass("bg").siblings().removeClass("bg");
+			var currentIndex=index%4;//当前的索引
+
+			if(liIndex>currentIndex){//当选择的索引大于当前，则向前旋转liIndex-currentIndex90度
+			
+				for(var i=0;i<liIndex-currentIndex;++i){				
+				var deg=(++index)*90;			
+				$("section > ul > li").css("transform","translateZ(-160px)  rotateX(-"+deg+"deg)");
+				}
+			}else if(liIndex<currentIndex){//当选择的索引小于当前，则向后旋转currentIndex-liIndex90度
+
+				for(var i=0;i<currentIndex-liIndex;++i){				
+				var deg=(--index)*90;		
+				$("section > ul > li").css("transform","translateZ(-160px)  rotateX(-"+deg+"deg)");
+				}
+				
+			}			
+		}
+	})
+
+	function play(num){
+	
+		var singleP=700/num;
+		for(var i=0;i<num;++i)
+		{
+			var list=$("<li><div></div><div></div><div></div><div></div></li>");
+			$("section > ul").append(list);
+
+		}
+
+		$("section > ul > li").each(function(number){
+			
+			$(this).css({"transition":"2s "+number*0.4+"s","width":singleP+"px"});
+			$(this).children().css({"background-position":-number*singleP+"px"});
+			if(number>2)
+			{
+				$(this).css("z-index","-1");
+			}
+			
+		
+		})
+	}
+	play(4);
+  </script>
+ </body>
+</html>
